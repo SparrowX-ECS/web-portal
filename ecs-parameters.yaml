@@ -25,4 +25,4 @@ database:
   enabled: false
 
 frontend:
-  apiBaseUrl: https://sparrowx-ecs.mo2cloud.com
+  apiBaseUrl: http://sparrowx-alb-1534427866.eu-west-1.elb.amazonaws.com
