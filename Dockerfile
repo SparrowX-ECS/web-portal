@@ -12,6 +12,8 @@ RUN npm ci
 COPY tsconfig.json vite.config.ts index.html ./
 COPY src/ ./src/
 
+ARG VITE_API_BASE_URL=https://sparrowx-ecs.mo2cloud.com
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 RUN npm run build
 
 # Stage 2: Serve static production assets with Nginx

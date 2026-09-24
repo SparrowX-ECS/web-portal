@@ -1,0 +1,28 @@
+environment:
+  name: sparrowx
+
+service:
+  name: web-portal
+  stack: sparrowx-web-portal
+
+image:
+  repository: web-portal
+
+container:
+  port: 8080
+  cpu: 256
+  memory: 512
+
+deployment:
+  desiredCount: 1
+
+loadBalancer:
+  pathPattern: /*
+  listenerRulePriority: 10
+  healthCheckPath: /health
+
+database:
+  enabled: false
+
+frontend:
+  apiBaseUrl: https://sparrowx-ecs.mo2cloud.com

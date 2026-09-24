@@ -24,30 +24,30 @@ export const taskApi = {
     }
 
     const query = searchParams.toString();
-    const url = `${API_CONFIG.task}/tasks${query ? `?${query}` : ''}`;
+    const url = `${API_CONFIG.task}/${query ? `?${query}` : ''}`;
     return request<TaskRead[]>(url);
   },
 
   getTask: async (id: number): Promise<TaskRead> => {
-    return request<TaskRead>(`${API_CONFIG.task}/tasks/${id}`);
+    return request<TaskRead>(`${API_CONFIG.task}/${id}`);
   },
 
   createTask: async (payload: TaskCreate): Promise<TaskRead> => {
-    return request<TaskRead>(`${API_CONFIG.task}/tasks`, {
+    return request<TaskRead>(`${API_CONFIG.task}/`, {
       method: 'POST',
       body: JSON.stringify(payload),
     });
   },
 
   updateTask: async (id: number, payload: TaskUpdate): Promise<TaskRead> => {
-    return request<TaskRead>(`${API_CONFIG.task}/tasks/${id}`, {
+    return request<TaskRead>(`${API_CONFIG.task}/${id}`, {
       method: 'PUT',
       body: JSON.stringify(payload),
     });
   },
 
   deleteTask: async (id: number): Promise<void> => {
-    return request<void>(`${API_CONFIG.task}/tasks/${id}`, {
+    return request<void>(`${API_CONFIG.task}/${id}`, {
       method: 'DELETE',
     });
   },

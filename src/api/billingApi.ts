@@ -21,29 +21,29 @@ export const billingApi = {
     }
 
     const query = searchParams.toString();
-    const url = `${API_CONFIG.billing}/invoices${query ? `?${query}` : ''}`;
+    const url = `${API_CONFIG.billing}/${query ? `?${query}` : ''}`;
     return request<InvoiceRead[]>(url);
   },
 
   getInvoice: async (id: number): Promise<InvoiceRead> => {
-    return request<InvoiceRead>(`${API_CONFIG.billing}/invoices/${id}`);
+    return request<InvoiceRead>(`${API_CONFIG.billing}/${id}`);
   },
 
   createInvoice: async (payload: InvoiceCreate): Promise<InvoiceRead> => {
-    return request<InvoiceRead>(`${API_CONFIG.billing}/invoices`, {
+    return request<InvoiceRead>(`${API_CONFIG.billing}/`, {
       method: 'POST',
       body: JSON.stringify(payload),
     });
   },
 
   payInvoice: async (id: number): Promise<InvoiceRead> => {
-    return request<InvoiceRead>(`${API_CONFIG.billing}/invoices/${id}/pay`, {
+    return request<InvoiceRead>(`${API_CONFIG.billing}/${id}/pay`, {
       method: 'POST',
     });
   },
 
   cancelInvoice: async (id: number): Promise<InvoiceRead> => {
-    return request<InvoiceRead>(`${API_CONFIG.billing}/invoices/${id}/cancel`, {
+    return request<InvoiceRead>(`${API_CONFIG.billing}/${id}/cancel`, {
       method: 'POST',
     });
   },

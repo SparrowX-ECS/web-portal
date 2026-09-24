@@ -9,18 +9,18 @@ export const reportingApi = {
   },
 
   getCustomerReport: async (): Promise<CustomerReport> => {
-    return request<CustomerReport>(`${API_CONFIG.reporting}/reports/customers`);
+    return request<CustomerReport>(`${API_CONFIG.reporting}/customers`);
   },
 
   getTaskReport: async (): Promise<TaskReport> => {
-    return request<TaskReport>(`${API_CONFIG.reporting}/reports/tasks`);
+    return request<TaskReport>(`${API_CONFIG.reporting}/tasks`);
   },
 
   getBillingReport: async (): Promise<BillingReport> => {
-    return request<BillingReport>(`${API_CONFIG.reporting}/reports/billing`);
+    return request<BillingReport>(`${API_CONFIG.reporting}/billing`);
   },
 
   getSummaryReport: async (): Promise<SummaryReport> => {
-    return request<SummaryReport>(`${API_CONFIG.reporting}/reports/summary`);
+    return request<SummaryReport>(`${API_CONFIG.reporting}/summary`);
   },
 };

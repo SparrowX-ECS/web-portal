@@ -92,7 +92,7 @@ export const ReportsPage: React.FC = () => {
       ) : (
         <>
           {/* Executive Summary Card */}
-          <Card title="Overall Operational Summary (/reports/summary)">
+          <Card title="Overall Operational Summary (/api/reporting/summary)">
             <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 16 }}>
               The Reporting API synthesizes live metrics from the Customer, Task, and Billing APIs over HTTP without requiring a separate database.
             </p>
@@ -135,12 +135,12 @@ export const ReportsPage: React.FC = () => {
 
           {/* Detailed Endpoint Breakdown */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 24 }}>
-            <Card title="Customer Service Metrics (/reports/customers)">
+            <Card title="Customer Service Metrics (/api/reporting/customers)">
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <div className="detail-grid">
                   <span className="detail-label">Endpoint</span>
                   <code style={{ fontSize: 12, backgroundColor: '#f1f5f9', padding: '2px 6px', borderRadius: 4 }}>
-                    GET /reports/customers
+                    GET /api/reporting/customers
                   </code>
 
                   <span className="detail-label">Metric</span>
@@ -154,12 +154,12 @@ export const ReportsPage: React.FC = () => {
               </div>
             </Card>
 
-            <Card title="Task Service Metrics (/reports/tasks)">
+            <Card title="Task Service Metrics (/api/reporting/tasks)">
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <div className="detail-grid">
                   <span className="detail-label">Endpoint</span>
                   <code style={{ fontSize: 12, backgroundColor: '#f1f5f9', padding: '2px 6px', borderRadius: 4 }}>
-                    GET /reports/tasks
+                    GET /api/reporting/tasks
                   </code>
 
                   <span className="detail-label">Metric</span>
@@ -173,12 +173,12 @@ export const ReportsPage: React.FC = () => {
               </div>
             </Card>
 
-            <Card title="Billing Service Metrics (/reports/billing)">
+            <Card title="Billing Service Metrics (/api/reporting/billing)">
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <div className="detail-grid">
                   <span className="detail-label">Endpoint</span>
                   <code style={{ fontSize: 12, backgroundColor: '#f1f5f9', padding: '2px 6px', borderRadius: 4 }}>
-                    GET /reports/billing
+                    GET /api/reporting/billing
                   </code>
 
                   <span className="detail-label">Metric</span>

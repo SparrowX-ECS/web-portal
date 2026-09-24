@@ -1,8 +1,11 @@
-// Environment variable configuration for backend services
+// The browser can only reach the public ALB, CloudFront, or custom domain.
+// ECS Service Connect names are for backend-to-backend traffic only.
+const baseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080').replace(/\/+$/, '');
+
 export const API_CONFIG = {
-  customer: (import.meta.env.VITE_CUSTOMER_API_URL || 'http://localhost:8001').replace(/\/+$/, ''),
-  notification: (import.meta.env.VITE_NOTIFICATION_API_URL || 'http://localhost:8004').replace(/\/+$/, ''),
-  task: (import.meta.env.VITE_TASK_API_URL || 'http://localhost:8002').replace(/\/+$/, ''),
-  billing: (import.meta.env.VITE_BILLING_API_URL || 'http://localhost:8003').replace(/\/+$/, ''),
-  reporting: (import.meta.env.VITE_REPORTING_API_URL || 'http://localhost:8005').replace(/\/+$/, ''),
+  customer: `${baseUrl}/api/customer`,
+  notification: `${baseUrl}/api/notification`,
+  task: `${baseUrl}/api/task`,
+  billing: `${baseUrl}/api/billing`,
+  reporting: `${baseUrl}/api/reporting`,
 };

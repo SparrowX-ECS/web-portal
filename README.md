@@ -18,19 +18,17 @@ The web portal integrates directly with five independent backend services:
 
 ## API Configuration
 
-Backend service URLs are configured via environment variables. Create a `.env` file from `.env.example`:
+The frontend uses one public backend origin. This must be the ALB DNS name, CloudFront DNS name, or custom domain reachable from the client's browser. Create a `.env` file from `.env.example`:
 
 ```bash
 cp .env.example .env
 ```
 
-| Environment Variable | Default Value | Target Service |
+| Environment Variable | Example | Purpose |
 | :--- | :--- | :--- |
-| `VITE_CUSTOMER_API_URL` | `http://localhost:8001` | Customer API |
-| `VITE_NOTIFICATION_API_URL` | `http://localhost:8004` | Notification API |
-| `VITE_TASK_API_URL` | `http://localhost:8002` | Task API |
-| `VITE_BILLING_API_URL` | `http://localhost:8003` | Billing API |
-| `VITE_REPORTING_API_URL` | `http://localhost:8005` | Reporting API |
+| `VITE_API_BASE_URL` | `https://sparrowx-ecs.mo2cloud.com` | Public backend origin |
+
+The application appends `/api/customer`, `/api/notification`, `/api/task`, `/api/billing`, and `/api/reporting` to this origin. ECS Service Connect names are used only for backend-to-backend traffic and must not be exposed to the browser.
 
 ---
 

@@ -23,16 +23,16 @@ export const notificationApi = {
     }
 
     const query = searchParams.toString();
-    const url = `${API_CONFIG.notification}/notifications${query ? `?${query}` : ''}`;
+    const url = `${API_CONFIG.notification}/${query ? `?${query}` : ''}`;
     return request<NotificationRead[]>(url);
   },
 
   getNotification: async (id: number): Promise<NotificationRead> => {
-    return request<NotificationRead>(`${API_CONFIG.notification}/notifications/${id}`);
+    return request<NotificationRead>(`${API_CONFIG.notification}/${id}`);
   },
 
   createNotification: async (payload: NotificationCreate): Promise<NotificationRead> => {
-    return request<NotificationRead>(`${API_CONFIG.notification}/notifications`, {
+    return request<NotificationRead>(`${API_CONFIG.notification}/`, {
       method: 'POST',
       body: JSON.stringify(payload),
     });
@@ -42,7 +42,7 @@ export const notificationApi = {
     id: number,
     payload: NotificationStatusUpdate
   ): Promise<NotificationRead> => {
-    return request<NotificationRead>(`${API_CONFIG.notification}/notifications/${id}/status`, {
+    return request<NotificationRead>(`${API_CONFIG.notification}/${id}/status`, {
       method: 'POST',
       body: JSON.stringify(payload),
     });

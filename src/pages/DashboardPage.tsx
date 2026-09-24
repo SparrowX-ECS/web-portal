@@ -132,7 +132,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
                 <AlertIcon size={12} /> Reporting API unavailable
               </span>
             ) : (
-              'Via Reporting API (/reports/summary)'
+              'Via Reporting API (/api/reporting/summary)'
             )}
           </div>
         </div>

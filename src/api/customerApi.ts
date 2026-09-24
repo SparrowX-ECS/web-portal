@@ -21,30 +21,30 @@ export const customerApi = {
     }
 
     const query = searchParams.toString();
-    const url = `${API_CONFIG.customer}/customers${query ? `?${query}` : ''}`;
+    const url = `${API_CONFIG.customer}/${query ? `?${query}` : ''}`;
     return request<CustomerRead[]>(url);
   },
 
   getCustomer: async (id: number): Promise<CustomerRead> => {
-    return request<CustomerRead>(`${API_CONFIG.customer}/customers/${id}`);
+    return request<CustomerRead>(`${API_CONFIG.customer}/${id}`);
   },
 
   createCustomer: async (payload: CustomerCreate): Promise<CustomerRead> => {
-    return request<CustomerRead>(`${API_CONFIG.customer}/customers`, {
+    return request<CustomerRead>(`${API_CONFIG.customer}/`, {
       method: 'POST',
       body: JSON.stringify(payload),
     });
   },
 
   updateCustomer: async (id: number, payload: CustomerUpdate): Promise<CustomerRead> => {
-    return request<CustomerRead>(`${API_CONFIG.customer}/customers/${id}`, {
+    return request<CustomerRead>(`${API_CONFIG.customer}/${id}`, {
       method: 'PUT',
       body: JSON.stringify(payload),
     });
   },
 
   deleteCustomer: async (id: number): Promise<void> => {
-    return request<void>(`${API_CONFIG.customer}/customers/${id}`, {
+    return request<void>(`${API_CONFIG.customer}/${id}`, {
       method: 'DELETE',
     });
   },
