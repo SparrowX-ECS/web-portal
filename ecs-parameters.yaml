@@ -25,4 +25,4 @@ database:
   enabled: false
 
 frontend:
-  apiBaseUrl: https://sparrowx-ecs.mo2cloud.com
+  apiBaseUrl: https://sparrowx.mo2cloud.com
