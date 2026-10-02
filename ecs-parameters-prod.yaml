@@ -1,0 +1,30 @@
+project:
+  name: sparrowx
+  environment: prod
+
+service:
+  name: web-portal
+
+image:
+  nameSpace: sparrowx/prod
+  repository: webportal
+
+container:
+  port: 8080
+  size: micro
+
+deployment:
+  desiredCount: 1
+
+loadBalancer:
+  pathPattern: /*
+  listenerRulePriority: 500
+  healthCheckPath: /health
+  smokeTestPath: /health
+
+database:
+  enabled: false
+
+frontend:
+  apiBaseUrl: https://sparrowx-prod.mo2cloud.com
+  corsAllowOrigins: '*'
