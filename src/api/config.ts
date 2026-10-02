@@ -3,9 +3,9 @@
 const baseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080').replace(/\/+$/, '');
 
 export const API_CONFIG = {
-  customer: `${baseUrl}/api/customer`,
-  notification: `${baseUrl}/api/notification`,
-  task: `${baseUrl}/api/task`,
+  customer: `${baseUrl}/api/customers`,
+  notification: `${baseUrl}/api/notifications`,
+  task: `${baseUrl}/api/tasks`,
   billing: `${baseUrl}/api/billing`,
   reporting: `${baseUrl}/api/reporting`,
 };

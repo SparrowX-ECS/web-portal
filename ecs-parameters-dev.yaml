@@ -7,7 +7,7 @@ service:
 
 image:
   nameSpace: sparrowx/dev
-  repository: web-portal
+  repository: webportal
 
 container:
   port: 8080
@@ -20,10 +20,11 @@ loadBalancer:
   pathPattern: /*
   listenerRulePriority: 500
   healthCheckPath: /health
+  smokeTestPath: /health
 
 database:
   enabled: false
 
 frontend:
-  apiBaseUrl: https://sparrowx.mo2cloud.com
+  apiBaseUrl: https://sparrowx-dev.mo2cloud.com
   corsAllowOrigins: '*'
