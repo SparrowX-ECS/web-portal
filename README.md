@@ -1,85 +1,95 @@
 # SparrowX Web Portal
 
-The **SparrowX Web Portal** is the centralized frontend application for SparrowX Labs, owned by the Product Experience Team. It provides an intuitive, clean interface for interacting with the five core SparrowX backend microservices running across the platform.
+React/Vite frontend for the fictional SparrowX SaaS platform. This repository is the frontend demonstration workload: it is deployed to ECS/Fargate and generates frontend-to-backend traffic against the Customer, Task, Notification, Billing, and Reporting APIs in the selected environment.
 
----
+## Service responsibilities
 
-## Backend API Dependencies
+- Provide the browser-based SparrowX dashboard and service pages.
+- Consume backend APIs through the environment ALB.
+- Build environment-specific API origins into the static bundle.
+- Serve the compiled application from an unprivileged Nginx container.
 
-The web portal integrates directly with five independent backend services:
+## API documentation
 
-1. **Customer API** (Alex Morgan, Customer Experience Team): Customer accounts CRUD, search, and pagination.
-2. **Notification API** (Emma Carter, Communications Team): Notification dispatch and lifecycle status tracking (`email`, `sms`, `push`).
-3. **Task API** (Daniel Brooks, Operations Team): Task creation, status lifecycle (`TODO`, `IN_PROGRESS`, `DONE`, `CANCELLED`), and assignment.
-4. **Billing API** (Sophie Wilson, Finance Platform Team): Customer invoices and payment settlement (`PENDING`, `PAID`, `CANCELLED`).
-5. **Reporting API** (Noah Taylor, Analytics Team): Read-only aggregated operational metrics over HTTP across upstream services.
+This repository is a frontend, not an API server, so it does not expose a FastAPI `/docs` endpoint. The backend API documentation is available in the corresponding repositories:
 
----
+- [Customer API](https://github.com/SparrowX-ECS/customer-api#api-documentation) — `/docs`
+- [Notification API](https://github.com/SparrowX-ECS/notification-api#api-documentation) — `/docs`
+- [Task API](https://github.com/SparrowX-ECS/task-api#api-documentation) — `/docs`
+- [Billing API](https://github.com/SparrowX-ECS/billing-api#api-documentation) — `/docs`
+- [Reporting API](https://github.com/SparrowX-ECS/reporting-api#api-documentation) — `/docs`
 
-## API Configuration
+The portal itself is health-checked at `/health` and uses `/health` as its deployment smoke-test path.
 
-The frontend uses one public backend origin. This must be the ALB DNS name, CloudFront DNS name, or custom domain reachable from the client's browser. Create a `.env` file from `.env.example`:
+## Runtime and build environment variables
 
-```bash
-cp .env.example .env
-```
+The frontend API origin is embedded at build time rather than read from the browser container at runtime.
 
-| Environment Variable | Example | Purpose |
-| :--- | :--- | :--- |
-| `VITE_API_BASE_URL` | `https://sparrowx-ecs.mo2cloud.com` | Public backend origin |
+| Variable | Required | Description |
+| --- | --- | --- |
+| `VITE_API_BASE_URL` | Yes for deployment | Public base URL used by the browser to call the selected environment’s backend APIs. |
 
-The application appends `/api/customer`, `/api/notification`, `/api/task`, `/api/billing`, and `/api/reporting` to this origin. ECS Service Connect names are used only for backend-to-backend traffic and must not be exposed to the browser.
+The value is supplied from `frontend.apiBaseUrl` in the selected ECS parameters file: the development URL for `dev` and the production URL for `prod`.
 
----
-
-## Local Development
-
-### 1. Install Dependencies
+## Local development
 
 ```bash
-npm install
-```
-
-### 2. Run Development Server
-
-```bash
+npm ci
+npm test
+npm run build
 npm run dev
 ```
 
-The portal runs by default at `http://localhost:3000`.
+For local development, copy `.env.example` to `.env` and set `VITE_API_BASE_URL` to a reachable API origin.
 
-### 3. Run Frontend Tests
+## CI/CD cycle
 
-```bash
-npm test
-```
+Pull requests run the shared Node test workflow, build the frontend with the environment’s `VITE_API_BASE_URL`, scan the immutable image with Trivy, and publish image metadata. A merge to `main` resolves the image, deploys it to `dev`, runs the `/health` smoke test, and publishes the tag and digest as the production candidate.
 
-### 4. Build for Production
+The manually confirmed production workflow resolves the candidate, verifies and copies the exact image by digest from the `dev` ECR namespace to `prod`, deploys it, runs the production smoke test, and publishes deployment metadata. This is **Build Once, Promote Many**: the production frontend image is not rebuilt.
 
-```bash
-npm run build
-```
+## Environments and deployment tracking
 
-The production assets will be built into the `./dist` directory.
+`dev` deploys automatically from `main`; `prod` is promoted manually after development validation. Each environment has its own ECS service, ECR namespace, API base URL, parameter file, SSM metadata path, and GitHub deployment history. See [`ecs-parameters-dev.yaml`](ecs-parameters-dev.yaml) and [`ecs-parameters-prod.yaml`](ecs-parameters-prod.yaml).
 
----
+## Rollback options
 
-## Docker Deployment
+### Git revert
 
-The container uses a multi-stage build (`Node 22` build stage &rarr; `Nginx Alpine` serving stage) and runs securely as a non-root user (`nginx`).
+Revert the problematic frontend or deployment configuration commit and merge it. The normal pipeline will build, scan, and deploy the corrective image.
 
-### Build Container Image
+### Quicker manual image rollback
 
-```bash
-docker build -t sparrowx-web-portal .
-```
+1. Open **Deployments**, select the `prod` environment, and open the desired previous deployment.
+2. Copy the deployed image tag.
+3. Open **Actions → Manual Rollback Production To Selected Image Tag → Run workflow**.
+4. Enter `ROLLBACK`, paste the image tag, and run the workflow.
 
-### Run Container
+The selected immutable image is redeployed and smoke-tested without rebuilding. ECS deployment circuit-breaker rollback is also enabled.
 
-```bash
-docker run --rm -p 8080:8080 sparrowx-web-portal
-```
+## Repository variables
 
-The application will be accessible at:
-- Web Portal UI: `http://localhost:8080/`
-- Health Endpoint: `http://localhost:8080/health` (returns `OK`)
+| Variable | Description |
+| --- | --- |
+| `AWS_ACCOUNT_ID` | AWS account containing ECS and ECR resources. |
+| `AWS_REGION` | AWS region used by GitHub Actions. |
+| `AWS_ROLE_NAME` | IAM role assumed through GitHub OIDC. |
+| `DEV_BASE_URL` | Development smoke-test origin with protocol and domain only. |
+| `DEV_DEPLOYED_PARAM_STORE_PATH` | SSM path for the last successful `dev` image. |
+| `PROD_BASE_URL` | Production smoke-test origin with protocol and domain only. |
+| `PROD_CANDIDATE_PARAM_STORE_PATH` | SSM path for the production candidate image. |
+| `PROD_DEPLOYED_PARAM_STORE_PATH` | SSM path for the last successful `prod` image. |
+
+The smoke-test workflow appends `/health` to the selected base URL. The base URL must not include a path.
+
+## Container and deployment configuration
+
+- Container port: `8080`.
+- ALB path: `/*`.
+- Health check: `/health`.
+- Smoke-test path: `/health`.
+- Database: disabled; the portal calls backend APIs over the environment ALB.
+
+## License
+
+This is a proprietary portfolio project. It is publicly viewable but not open source. All rights are reserved. See [LICENSE.md](LICENSE.md).
