@@ -21,7 +21,7 @@ deployment:
 
 loadBalancer:
   pathPattern: /*
-  listenerRulePriority: 500
+  listenerRulePriority: 2000
   healthCheckPath: /health
   smokeTestPath: /health
 
