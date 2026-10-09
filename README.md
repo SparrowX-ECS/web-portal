@@ -19,7 +19,7 @@ This repository is a frontend, not an API server, so it does not expose a FastAP
 - [Billing API](https://github.com/SparrowX-ECS/billing-api#api-documentation) — `/docs`
 - [Reporting API](https://github.com/SparrowX-ECS/reporting-api#api-documentation) — `/docs`
 
-The portal itself is health-checked at `/health` and uses `/health` as its deployment smoke-test path.
+The portal itself is health-checked at `/health` and uses `/health` as its deployment smoke-test path. Deployed frontend validation also checks the HTML SPA shell at `/`.
 
 ## Runtime and build environment variables
 
@@ -44,9 +44,11 @@ For local development, copy `.env.example` to `.env` and set `VITE_API_BASE_URL`
 
 ## CI/CD cycle
 
-Pull requests run the shared Node test workflow, build the frontend with the environment’s `VITE_API_BASE_URL`, scan the immutable image with Trivy, and publish image metadata. A merge to `main` resolves the image, deploys it to `dev`, runs the `/health` smoke test, and publishes the tag and digest as the production candidate.
+Pull requests run the shared Node test workflow, source-security scan, non-authoritative frontend build, and PR quality gate using `app-sec-policy.yaml`. A merge to `main` runs the authoritative frontend build, image security scan, CI quality gate, Cosign signing, and publishes image metadata.
 
-The manually confirmed production workflow resolves the candidate, verifies and copies the exact image by digest from the `dev` ECR namespace to `prod`, deploys it, runs the production smoke test, and publishes deployment metadata. This is **Build Once, Promote Many**: the production frontend image is not rebuilt.
+The development deployment resolves the signed image, deploys it to `dev`, runs the `/health` smoke test, runs deployed frontend checks against `/health` and `/`, runs the Node DAST baseline scan, and evaluates the development quality gate before publishing the production candidate.
+
+The manually confirmed production workflow resolves the candidate, verifies and copies the exact image by digest from the `dev` ECR namespace to `prod`, deploys it, runs the smoke and deployed frontend tests, and evaluates the production quality gate. A passing gate publishes deployment metadata; a failed gate resolves and deploys the previous production image. This is **Build Once, Promote Many**: the production frontend image is not rebuilt.
 
 ## Environments and deployment tracking
 
@@ -79,6 +81,8 @@ The selected immutable image is redeployed and smoke-tested without rebuilding. 
 | `PROD_BASE_URL` | Production smoke-test origin with protocol and domain only. |
 | `PROD_CANDIDATE_PARAM_STORE_PATH` | SSM path for the production candidate image. |
 | `PROD_DEPLOYED_PARAM_STORE_PATH` | SSM path for the last successful `prod` image. |
+
+The repository also contains `api-tests/test_web_portal.test.ts`. These are deployed frontend checks, not backend API CRUD tests: they verify that `/health` returns `200 OK` and that `/` serves the built SPA shell.
 
 The smoke-test workflow appends `/health` to the selected base URL. The base URL must not include a path.
 

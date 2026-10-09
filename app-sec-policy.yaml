@@ -1,0 +1,16 @@
+image_scan:
+  max_critical: 100
+  max_high: 100
+
+sbom:
+  required: true
+
+secret_scanning:
+  block_on_findings: true
+
+sast:
+  max_findings: 100
+
+dast:
+  max_high: 100
+  max_medium: 100
