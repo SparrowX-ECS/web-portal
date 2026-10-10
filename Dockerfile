@@ -19,6 +19,10 @@ RUN npm run build
 # Stage 2: Serve static production assets with Nginx
 FROM nginx:alpine
 
+# Pull patched Alpine packages for the runtime image, including security fixes
+# reported by Trivy for expat, pcre2, and libtiff.
+RUN apk upgrade --no-cache
+
 # Configure nginx permissions for non-root user
 RUN touch /var/run/nginx.pid && \
     chown -R nginx:nginx /var/run/nginx.pid /var/cache/nginx /var/log/nginx /etc/nginx/conf.d
